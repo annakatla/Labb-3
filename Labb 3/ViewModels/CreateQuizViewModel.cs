@@ -13,9 +13,12 @@ namespace Labb_3.ViewModels
 {
     public class CreateQuizViewModel : ObservableObject
     {
+        #region Managers
+        
         private readonly QuizManager _quizManager;
         private readonly NavigationManager _navigationManager;
-        private readonly FileManager _fileManager;
+
+        #endregion
 
         private Quiz _creatingQuiz;
         public Quiz CreatingQuiz
@@ -36,12 +39,7 @@ namespace Labb_3.ViewModels
             }
         }
 
-        private string _questionStatement;
-        public string QuestionStatement
-        {
-            get { return _questionStatement; }
-            set { SetProperty(ref _questionStatement, value); }
-        }
+        #region AnswerStuff
 
         private string _answer1;
         public string Answer1
@@ -84,35 +82,52 @@ namespace Labb_3.ViewModels
             set { SetProperty(ref _correctAnswer, value); }
         }
 
-        private ObservableCollection<string> _answers = new ObservableCollection<string>() {"", "", ""};
+        private readonly ObservableCollection<string> _answers = new() {"", "", ""};
 
         public ObservableCollection<string> Answers
         {
             get { return _answers; }
         }
 
+
+        #endregion
+
+        #region QuestionStuff
+
+        private string _questionStatement;
+        public string QuestionStatement
+        {
+            get { return _questionStatement; }
+            set { SetProperty(ref _questionStatement, value); }
+        }
+        
         private readonly ObservableCollection<string> _questions;
         public IEnumerable<string> Questions => _questions;
 
+        #endregion
+
+        #region Commands
         public RelayCommand GoToStartCommand { get; }
-        public RelayCommand SaveQuizCommand { get; }
+        public AsyncRelayCommand SaveQuizCommand { get; }
         public RelayCommand AddQuestionCommand { get; }
         public RelayCommand CreateQuizCommand { get; }
 
-        public CreateQuizViewModel(NavigationManager navigationManager, QuizManager quizManager, FileManager fileManager)
+        #endregion
+
+        public CreateQuizViewModel(NavigationManager navigationManager, QuizManager quizManager)
         {
             _navigationManager = navigationManager;
             _quizManager = quizManager;
-            _fileManager = fileManager;
             CorrectAnswer = 0;
             _questions = new ObservableCollection<string>();
             GoToStartCommand = new RelayCommand(GoToStart);
-            SaveQuizCommand = new RelayCommand(SaveToFile, CanSaveToFile);
+            SaveQuizCommand = new AsyncRelayCommand(SaveToFileAsync, CanSaveToFile);
             AddQuestionCommand = new RelayCommand(AddQuestion, CanAddQuestion);
             CreateQuizCommand = new RelayCommand(CreateQuiz, CanCreateQuiz);
             PropertyChanged += OnViewModelPropertyChanged;
         }
 
+        #region Methods
 
         private bool CanCreateQuiz()
         {
@@ -175,16 +190,15 @@ namespace Labb_3.ViewModels
             }
         }
 
-        private void SaveToFile()
+        private async Task SaveToFileAsync()
         {
-            _fileManager.SaveToFileAsync();
+            await _quizManager.SaveToFileAsync();
         }
 
         private void GoToStart()
         {
-            _navigationManager.CurrentViewModel = new StartViewModel(_navigationManager, _quizManager, _fileManager);
+            _navigationManager.CurrentViewModel = new StartViewModel(_navigationManager, _quizManager);
         }
-
 
         private void OnViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
@@ -192,5 +206,8 @@ namespace Labb_3.ViewModels
             AddQuestionCommand.NotifyCanExecuteChanged();
             CreateQuizCommand.NotifyCanExecuteChanged();
         }
+
+        #endregion
+
     }
 }

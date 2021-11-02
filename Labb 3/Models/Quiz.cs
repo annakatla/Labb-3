@@ -6,6 +6,13 @@ namespace Labb_3.Models
 {
     public class Quiz
     {
+        private string _title;
+        public string Title
+        {
+            get => _title;
+            set => _title = value;
+        }
+
         private ICollection<Question> _questions;
         public ICollection<Question> Questions
         {
@@ -13,13 +20,14 @@ namespace Labb_3.Models
             set => _questions = value;
         }
 
-        private readonly List<int> _shownQuestions = new List<int>();
 
-        private string _title;
-        public string Title
+        private readonly List<int> _shownQuestions = new();
+
+        
+        public Quiz(string title)
         {
-            get => _title;
-            set => _title = value;
+            _title = title;
+            _questions = new List<Question>();
         }
 
         public Question GetRandomQuestion()
@@ -40,7 +48,6 @@ namespace Labb_3.Models
                     {
                         question = random.Next(_questions.Count);
                     }
-                    
                 }
                 else
                 {
@@ -64,11 +71,6 @@ namespace Labb_3.Models
             //_questions.RemoveAt(index);
         }
 
-        public Quiz(string title)
-        {
-            _title = title;
-            _questions = new List<Question>();
-        }
 
     }
 }

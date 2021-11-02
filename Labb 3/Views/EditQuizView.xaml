@@ -44,7 +44,10 @@
                 Margin="5,10"
                 FontSize="10"
                 Text="Select the quiz you want to edit" />
-            <ComboBox DisplayMemberPath="Title" ItemsSource="{Binding AvailableQuizzes, UpdateSourceTrigger=PropertyChanged}" />
+            <ComboBox
+                DisplayMemberPath="Title"
+                ItemsSource="{Binding AvailableQuizzes, UpdateSourceTrigger=PropertyChanged}"
+                SelectedItem="{Binding CurrentQuiz}" />
         </StackPanel>
         <StackPanel
             Grid.Row="3"
@@ -54,7 +57,11 @@
                 Margin="5,10"
                 FontSize="10"
                 Text="Which question do you want to change?" />
-            <ComboBox DisplayMemberPath="Title" ItemsSource="{Binding AvailableQuizzes, UpdateSourceTrigger=PropertyChanged}" />
+            <ComboBox
+                DisplayMemberPath="Statement"
+                IsSynchronizedWithCurrentItem="True"
+                ItemsSource="{Binding CurrentQuiz, UpdateSourceTrigger=PropertyChanged}"
+                SelectedItem="{Binding CurrentQuestion}" />
         </StackPanel>
         <StackPanel
             Grid.Row="4"
@@ -62,24 +69,28 @@
             Grid.Column="1"
             Grid.ColumnSpan="2">
             <TextBlock Text="Answer no 1:" />
-            <TextBox Text="{Binding Answer1, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            <TextBox Text="{Binding Answers[0], Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
             <TextBlock Text="Answer no 2:" />
-            <TextBox Text="{Binding Answer2, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            <TextBox Text="{Binding Answers[1], Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
             <TextBlock Text="Answer no 3:" />
-            <TextBox Text="{Binding Answer3, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-            <TextBlock Text="Select right answer:" />
-            <ComboBox ItemsSource="{Binding Answers, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
+            <TextBox Text="{Binding Answers[2], Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+        </StackPanel>
+        <StackPanel Grid.Row="5" Grid.Column="4" Grid.ColumnSpan="2">
+            <TextBlock Margin="10" Text="Select right answer:" />
+            <ComboBox Margin="10,0" ItemsSource="{Binding Answers, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding CorrectAnswer, UpdateSourceTrigger=PropertyChanged}" />
         </StackPanel>
         <Button
             Grid.Row="6"
             Grid.Column="1"
             Margin="10,15,10,10"
+            Command="{Binding SaveQuestionCommand}"
             Content="SAVE QUESTION" />
         <Button
             Grid.Row="6"
             Grid.Column="2"
             Margin="10,15,10,10"
-            Content="ADD QUESTION" />
+            Command="{Binding AddQuestionCommand}"
+            Content="ADD NEW QUESTION" />
         <Button
             Grid.Row="6"
             Grid.Column="4"

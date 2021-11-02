@@ -14,7 +14,6 @@ namespace Labb_3.ViewModels
 
         private readonly NavigationManager _navigationManager;
         private readonly QuizManager _quizManager;
-        private readonly FileManager _fileManager;
 
         #endregion
 
@@ -30,6 +29,7 @@ namespace Labb_3.ViewModels
                 SetProperty(ref _currentQuiz, value);
                 OnPropertyChanged(nameof(AnsweredQuestions));
                 OnPropertyChanged(nameof(CorrectAnswers));
+                OnPropertyChanged(nameof(CurrentQuestion));
             }
         }
 
@@ -74,11 +74,10 @@ namespace Labb_3.ViewModels
         #endregion
 
 
-        public PlayQuizViewModel(NavigationManager navigationManager, QuizManager quizManager, FileManager fileManager)
+        public PlayQuizViewModel(NavigationManager navigationManager, QuizManager quizManager)
         {
             _navigationManager = navigationManager;
             _quizManager = quizManager;
-            _fileManager = fileManager;
 
             CurrentQuiz = AvailableQuizzes[0];
 
@@ -143,11 +142,12 @@ namespace Labb_3.ViewModels
 
         private void GoToStart()
         {
-            _navigationManager.CurrentViewModel = new StartViewModel(_navigationManager, _quizManager, _fileManager);
+            _navigationManager.CurrentViewModel = new StartViewModel(_navigationManager, _quizManager);
         }
         private void StartGame()
         {
             CurrentQuestion = CurrentQuiz.GetRandomQuestion();
+
         }
 
         private void OnViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)

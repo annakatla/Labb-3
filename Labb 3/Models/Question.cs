@@ -13,16 +13,6 @@ namespace Labb_3.Models
         public string[] Answers { get; set; }
         public int CorrectAnswer { get; set; }
 
-        public enum Subject
-        {
-            Prices,
-            Actors,
-            Directors,
-            Songs,
-            Quotes,
-            Other
-        }
-
         public Question(string statement, int correctAnswer, params string[] answers)
         {
             Statement = statement;

@@ -48,7 +48,6 @@
                 Text="Select your quiz and press the Start Game-button" />
             <ComboBox DisplayMemberPath="Title" ItemsSource="{Binding AvailableQuizzes, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding CurrentQuiz}"/>
         </StackPanel>
-
         <TextBlock
             Grid.Row="3"
             Grid.Column="1"
@@ -57,11 +56,6 @@
             FontSize="12"
             Text="{Binding CurrentQuestion.Statement, UpdateSourceTrigger=PropertyChanged}"
             TextWrapping="Wrap" />
-        <Image
-            Grid.Row="3"
-            Grid.RowSpan="3"
-            Grid.Column="3"
-            Grid.ColumnSpan="2" />
         <Button
             Grid.Row="4"
             Grid.Column="1"
