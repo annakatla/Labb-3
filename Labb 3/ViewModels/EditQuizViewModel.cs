@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using Labb_3.Managers;
+﻿using Labb_3.Managers;
 using Labb_3.Models;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows;
 
 namespace Labb_3.ViewModels
 {
@@ -191,6 +187,8 @@ namespace Labb_3.ViewModels
             PropertyChanged += OnViewModelPropertyChanged;
         }
 
+        #region Methods
+
         private bool CanSaveQuestion()
         {
             if (CurrentQuiz != null &&
@@ -285,6 +283,9 @@ namespace Labb_3.ViewModels
             AddQuestionCommand.NotifyCanExecuteChanged();
             DeleteQuestionCommand.NotifyCanExecuteChanged();
         }
+
+        #endregion
+
 
     }
 }
