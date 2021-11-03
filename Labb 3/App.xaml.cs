@@ -18,7 +18,6 @@ namespace Labb_3
     /// </summary>
     public partial class App : Application
     {
-        //Implementera en NaviagionsManager och skapa ett objekt..
         private readonly NavigationManager _navigationManager;
         private readonly QuizManager _quizManager;
 
@@ -32,13 +31,11 @@ namespace Labb_3
         {
             base.OnStartup(e);
 
-            //Sätt den första vymodellen till en StartViewModel. 
             _navigationManager.CurrentViewModel = new StartViewModel(_navigationManager, _quizManager);
 
-            //Skapa ditt huvudfönster, för att sedan kunna byta vyer(Usercontrols) och vymodeller på det.
             MainWindow = new MainWindow()
             {
-                DataContext = new MainViewModel(_navigationManager, _quizManager)
+                DataContext = new MainViewModel(_navigationManager)
             };
 
             MainWindow.Show();

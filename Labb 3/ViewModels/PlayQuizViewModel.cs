@@ -4,6 +4,7 @@ using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows;
 
 namespace Labb_3.ViewModels
@@ -17,7 +18,6 @@ namespace Labb_3.ViewModels
 
         #endregion
 
-
         public ObservableCollection<Quiz> AvailableQuizzes => _quizManager.AllQuizzes;
 
         private Quiz _currentQuiz;
@@ -27,8 +27,8 @@ namespace Labb_3.ViewModels
             set
             {
                 SetProperty(ref _currentQuiz, value);
-                OnPropertyChanged(nameof(AnsweredQuestions));
-                OnPropertyChanged(nameof(CorrectAnswers));
+                OnPropertyChanged(nameof(NumberOfAnsweredQuestions));
+                OnPropertyChanged(nameof(NumberOfCorrectAnswers));
                 OnPropertyChanged(nameof(CurrentQuestion));
             }
         }
@@ -42,26 +42,30 @@ namespace Labb_3.ViewModels
 
         private int _chosenAnswer;
 
+        #region Integers for stats
+
+        
         /// <summary>
         /// Integer för att räkna upp i vyn vid varje besvarad fråga.
         /// </summary>
-        private int _answeredQuestions;
-        public int AnsweredQuestions
+        private int _numberOfAnsweredQuestions;
+        public int NumberOfAnsweredQuestions
         {
-            get { return _answeredQuestions; }
-            set { SetProperty(ref _answeredQuestions, value); }
+            get { return _numberOfAnsweredQuestions; }
+            set { SetProperty(ref _numberOfAnsweredQuestions, value); }
         }
 
         /// <summary>
         /// Integer för att räkna upp i vyn vid varje rätt svar.
         /// </summary>
-        private int _correctAnswers;
-        public int CorrectAnswers
+        private int _numberOfCorrectAnswers;
+        public int NumberOfCorrectAnswers
         {
-            get { return _correctAnswers; }
-            set { SetProperty(ref _correctAnswers, value); }
+            get { return _numberOfCorrectAnswers; }
+            set { SetProperty(ref _numberOfCorrectAnswers, value); }
         }
 
+        #endregion
 
         #region Commands
 
@@ -73,90 +77,73 @@ namespace Labb_3.ViewModels
 
         #endregion
 
-
         public PlayQuizViewModel(NavigationManager navigationManager, QuizManager quizManager)
         {
             _navigationManager = navigationManager;
             _quizManager = quizManager;
 
             CurrentQuiz = AvailableQuizzes[0];
-
-            CorrectAnswers = 0;
-            AnsweredQuestions = 0;
-
             GoToStartCommand = new RelayCommand(GoToStart);
             ChooseAnswer1Command = new RelayCommand(ChooseAnswer1);
             ChooseAnswer2Command = new RelayCommand(ChooseAnswer2);
             ChooseAnswer3Command = new RelayCommand(ChooseAnswer3);
             StartGameCommand = new RelayCommand(StartGame);
-
-            PropertyChanged += OnViewModelPropertyChanged;
         }
 
+        private void StartGame()
+        {
+            CurrentQuestion = CurrentQuiz.GetRandomQuestion();
+            NumberOfCorrectAnswers = 0;
+            NumberOfAnsweredQuestions = 0;
+        }
+        
+        #region AnswerMethods
         private void ChooseAnswer1()
         {
-            AnsweredQuestions++;
             _chosenAnswer = 0;
-            if (_chosenAnswer == CurrentQuestion.CorrectAnswer)
-            {
-                CorrectAnswers++;
-                MessageBox.Show("Correct answer!");
-            }
-            else
-            {
-                MessageBox.Show("Wrong answer. :( ");
-            }
-            CurrentQuestion = CurrentQuiz.GetRandomQuestion();
+            ControlAnswer();
         }
+
+
         private void ChooseAnswer2()
         {
-            AnsweredQuestions++;
             _chosenAnswer = 1;
-            if (_chosenAnswer == CurrentQuestion.CorrectAnswer)
-            {
-                CorrectAnswers++;
-                MessageBox.Show("Correct answer!");
-            }
-            else
-            {
-                MessageBox.Show("Wrong answer. :( ");
-            }
-            CurrentQuestion = CurrentQuiz.GetRandomQuestion();
+            ControlAnswer();
         }
         private void ChooseAnswer3()
         {
-            AnsweredQuestions++;
             _chosenAnswer = 2;
+            ControlAnswer();
+        }
+        private void ControlAnswer()
+        {
+            NumberOfAnsweredQuestions++;
             if (_chosenAnswer == CurrentQuestion.CorrectAnswer)
             {
-                CorrectAnswers++;
+                NumberOfCorrectAnswers++;
                 MessageBox.Show("Correct answer!");
             }
             else
             {
                 MessageBox.Show("Wrong answer. :( ");
             }
-            CurrentQuestion = CurrentQuiz.GetRandomQuestion();
+
+            if (NumberOfAnsweredQuestions == CurrentQuiz.Questions.Count)
+            {
+                MessageBox.Show($"Thank you for playing! You got {NumberOfCorrectAnswers} of {CurrentQuiz.Questions.Count}.");
+                GoToStart();
+            }
+            else
+            {
+                CurrentQuestion = CurrentQuiz.GetRandomQuestion();
+            }
         }
 
+        #endregion
 
         private void GoToStart()
         {
             _navigationManager.CurrentViewModel = new StartViewModel(_navigationManager, _quizManager);
         }
-        private void StartGame()
-        {
-            CurrentQuestion = CurrentQuiz.GetRandomQuestion();
-
-        }
-
-        private void OnViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            StartGameCommand.NotifyCanExecuteChanged();
-            ChooseAnswer1Command.NotifyCanExecuteChanged();
-            ChooseAnswer2Command.NotifyCanExecuteChanged();
-            ChooseAnswer3Command.NotifyCanExecuteChanged();
-        }
-
     }
 }

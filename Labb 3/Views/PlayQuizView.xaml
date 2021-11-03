@@ -46,7 +46,10 @@
                 Margin="5"
                 FontSize="10"
                 Text="Select your quiz and press the Start Game-button" />
-            <ComboBox DisplayMemberPath="Title" ItemsSource="{Binding AvailableQuizzes, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding CurrentQuiz}"/>
+            <ComboBox
+                DisplayMemberPath="Title"
+                ItemsSource="{Binding AvailableQuizzes, UpdateSourceTrigger=PropertyChanged}"
+                SelectedItem="{Binding CurrentQuiz}" />
         </StackPanel>
         <TextBlock
             Grid.Row="3"
@@ -82,11 +85,11 @@
             Orientation="Vertical">
             <StackPanel Margin="2" Orientation="Horizontal">
                 <TextBlock Margin="0,0,5,0" Text="Antal besvarade: " />
-                <TextBlock Text="{Binding AnsweredQuestions, UpdateSourceTrigger=PropertyChanged}" />
+                <TextBlock Text="{Binding NumberOfAnsweredQuestions, UpdateSourceTrigger=PropertyChanged}" />
             </StackPanel>
             <StackPanel Margin="2" Orientation="Horizontal">
                 <TextBlock Margin="0,0,5,0" Text="Antal rätt: " />
-                <TextBlock Text="{Binding CorrectAnswers, UpdateSourceTrigger=PropertyChanged}" />
+                <TextBlock Text="{Binding NumberOfCorrectAnswers, UpdateSourceTrigger=PropertyChanged}" />
             </StackPanel>
             <StackPanel Margin="2" Orientation="Horizontal">
                 <TextBlock Margin="0,0,5,0" Text="Av totalt:" />
@@ -104,6 +107,6 @@
             Grid.Column="5"
             Margin="10,15,10,10"
             Command="{Binding GoToStartCommand}"
-            Content="Back to start" />
+            Content="Back to Main Meny" />
     </Grid>
 </UserControl>

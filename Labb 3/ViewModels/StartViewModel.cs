@@ -17,11 +17,10 @@ namespace Labb_3.ViewModels
     {
         private readonly NavigationManager _navigationManager;
         private readonly QuizManager _quizManager;
+
         public AsyncRelayCommand EditQuizCommand { get; }
         public AsyncRelayCommand PlayQuizCommand { get; }
         public AsyncRelayCommand CreateQuizCommand { get; }
-
-
 
         public StartViewModel(NavigationManager navigationManager, QuizManager quizManager)
         {
@@ -33,6 +32,7 @@ namespace Labb_3.ViewModels
             CreateQuizCommand = new AsyncRelayCommand(GoToCreate);
 
         }
+
         private async Task GoToPlay()
         {
             await Task.Run(() => { _quizManager.AllQuizzes = new ObservableCollection<Quiz>(_quizManager.LoadQuizAsync().Result); });
@@ -50,7 +50,6 @@ namespace Labb_3.ViewModels
             await Task.Run(() => { _quizManager.AllQuizzes = new ObservableCollection<Quiz>(_quizManager.LoadQuizAsync().Result); });
             _navigationManager.CurrentViewModel = new EditQuizViewModel(_navigationManager, _quizManager);
         }
-
 
     }
 }

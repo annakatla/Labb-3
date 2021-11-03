@@ -43,7 +43,7 @@
             <TextBlock Text="Write the Title of your Quiz here:" />
             <TextBox
                 FontSize="14"
-                Text="{Binding QuizTitle, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                Text="{Binding QuizTitle, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}"
                 TextWrapping="Wrap" />
         </StackPanel>
         <StackPanel
@@ -62,20 +62,23 @@
             <TextBlock Text="Select right answer:" />
             <ComboBox ItemsSource="{Binding Answers, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" SelectedIndex="{Binding CorrectAnswer, UpdateSourceTrigger=PropertyChanged}" />
         </StackPanel>
-        <TextBlock
+        <StackPanel
             Grid.Row="1"
             Grid.Column="4"
-            Grid.ColumnSpan="2"
-            FontSize="14"
-            FontWeight="Bold"
-            Text="{Binding CreatingQuiz.Title, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" VerticalAlignment="Bottom" />
+            Grid.ColumnSpan="2">
+            <TextBlock Margin="10" Text="Your quiz so far:" />
+            <TextBlock
+                FontSize="14"
+                FontWeight="Bold"
+                Text="{Binding CreatingQuiz.Title, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" />
+        </StackPanel>
         <ListView
             Grid.Row="2"
             Grid.RowSpan="4"
             Grid.Column="4"
             Grid.ColumnSpan="2"
-            Margin="0, 16"
-            ItemsSource="{Binding Questions, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" />
+            Margin="0,16"
+            ItemsSource="{Binding ListOfQuestions, UpdateSourceTrigger=PropertyChanged}" />
         <Button
             Grid.Row="2"
             Grid.Column="3"
@@ -96,7 +99,6 @@
             Margin="10,15,10,10"
             Command="{Binding SaveQuizCommand}"
             Content="SAVE QUIZ" />
-
         <Button
             Grid.Row="6"
             Grid.Column="5"

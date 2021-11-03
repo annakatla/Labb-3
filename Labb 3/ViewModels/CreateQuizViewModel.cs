@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace Labb_3.ViewModels
 {
@@ -24,7 +25,10 @@ namespace Labb_3.ViewModels
         public Quiz CreatingQuiz
         {
             get { return _creatingQuiz; }
-            set {SetProperty(ref _creatingQuiz, value); }
+            set
+            {
+                SetProperty(ref _creatingQuiz, value);
+            }
         }
 
 
@@ -69,7 +73,9 @@ namespace Labb_3.ViewModels
         public string Answer3
         {
             get { return _answer3; }
-            set { SetProperty(ref _answer3, value); 
+            set 
+            { 
+                SetProperty(ref _answer3, value); 
                 Answers[2] = _answer3;
                 OnPropertyChanged(nameof(CorrectAnswer));
             }
@@ -92,19 +98,22 @@ namespace Labb_3.ViewModels
 
         #endregion
 
-        #region QuestionStuff
 
         private string _questionStatement;
         public string QuestionStatement
         {
             get { return _questionStatement; }
-            set { SetProperty(ref _questionStatement, value); }
+            set
+            {
+                SetProperty(ref _questionStatement, value);
+            }
         }
-        
-        private readonly ObservableCollection<string> _questions;
-        public IEnumerable<string> Questions => _questions;
 
-        #endregion
+        private readonly ObservableCollection<string> _listOfQuestions;
+        public ObservableCollection<string> ListOfQuestions
+        {
+            get { return CreatingQuiz != null? new ObservableCollection<string>(CreatingQuiz.Questions.Select(q => q.Statement)): new ObservableCollection<string>(); }
+        }
 
         #region Commands
         public RelayCommand GoToStartCommand { get; }
@@ -119,11 +128,11 @@ namespace Labb_3.ViewModels
             _navigationManager = navigationManager;
             _quizManager = quizManager;
             CorrectAnswer = 0;
-            _questions = new ObservableCollection<string>();
             GoToStartCommand = new RelayCommand(GoToStart);
             SaveQuizCommand = new AsyncRelayCommand(SaveToFileAsync, CanSaveToFile);
             AddQuestionCommand = new RelayCommand(AddQuestion, CanAddQuestion);
             CreateQuizCommand = new RelayCommand(CreateQuiz, CanCreateQuiz);
+
             PropertyChanged += OnViewModelPropertyChanged;
         }
 
@@ -142,14 +151,13 @@ namespace Labb_3.ViewModels
         }
         private void CreateQuiz()
         {
-            _creatingQuiz = new Quiz(_quizTitle);
-            _quizManager.AllQuizzes.Add(_creatingQuiz);
+            CreatingQuiz = new Quiz(_quizTitle);
+            _quizManager.AllQuizzes.Add(CreatingQuiz);
         }
-
 
         private bool CanAddQuestion()
         {
-            if (!string.IsNullOrWhiteSpace(_quizTitle) && 
+            if (CreatingQuiz != null && 
                 !string.IsNullOrWhiteSpace(_questionStatement) && 
                 !string.IsNullOrWhiteSpace(_answer1) && 
                 !string.IsNullOrWhiteSpace(_answer2) && 
@@ -162,25 +170,24 @@ namespace Labb_3.ViewModels
                 return false;
             }
         }
-
         private void AddQuestion()
         {
-            _creatingQuiz.Questions.Add(new Question(_questionStatement, _correctAnswer, _answer1, _answer2, _answer3));
-            _questions.Add(_questionStatement);
+            CreatingQuiz.AddQuestion(_questionStatement, _correctAnswer, _answer1, _answer2, _answer3);
+            OnPropertyChanged(nameof(ListOfQuestions));
 
-            QuestionStatement = null;
+            QuestionStatement = "";
             CorrectAnswer = 0;
             Answer1 = "";
             Answer2 = "";
             Answer3 = "";
-            _answers[0] = "";
-            _answers[1] = "";
-            _answers[2] = "";
+            Answers[0] = "";
+            Answers[1] = "";
+            Answers[2] = "";
         }
 
         private bool CanSaveToFile()
         {
-            if (_creatingQuiz != null && _creatingQuiz.Questions != null)
+            if (CreatingQuiz != null && CreatingQuiz.Questions.Count != 0)
             {
                 return true;
             }
@@ -189,14 +196,16 @@ namespace Labb_3.ViewModels
                 return false;
             }
         }
-
         private async Task SaveToFileAsync()
         {
             await _quizManager.SaveToFileAsync();
+            MessageBox.Show("Your quiz was successfully saved.");
+            GoToStart();
         }
 
         private void GoToStart()
         {
+            CreatingQuiz = null;
             _navigationManager.CurrentViewModel = new StartViewModel(_navigationManager, _quizManager);
         }
 

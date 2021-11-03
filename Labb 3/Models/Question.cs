@@ -11,7 +11,7 @@ namespace Labb_3.Models
     {
         public string Statement { get; set; }
         public string[] Answers { get; set; }
-        public int CorrectAnswer { get; set; }
+        public int CorrectAnswer { get; }
 
         public Question(string statement, int correctAnswer, params string[] answers)
         {

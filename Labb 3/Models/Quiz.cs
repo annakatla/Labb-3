@@ -59,16 +59,16 @@ namespace Labb_3.Models
         }
 
         public void AddQuestion(string statement, int correctAnswer, params string[] answers)
-        
         {
             Question question = new(statement, correctAnswer, answers);
-            //_questions.Add(question);
             _questions.Add(question);
         }
 
         public void RemoveQuestion(int index)
         {
-            //_questions.RemoveAt(index);
+            var questionsCopy = _questions.ToList();
+            var questionToDelete = questionsCopy[index];
+            _questions.Remove(questionToDelete);
         }
 
 
