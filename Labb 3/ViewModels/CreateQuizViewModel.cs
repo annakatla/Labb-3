@@ -109,7 +109,6 @@ namespace Labb_3.ViewModels
             }
         }
 
-        private readonly ObservableCollection<string> _listOfQuestions;
         public ObservableCollection<string> ListOfQuestions
         {
             get { return CreatingQuiz != null? new ObservableCollection<string>(CreatingQuiz.Questions.Select(q => q.Statement)): new ObservableCollection<string>(); }
@@ -140,14 +139,20 @@ namespace Labb_3.ViewModels
 
         private bool CanCreateQuiz()
         {
-            if (!string.IsNullOrWhiteSpace(_quizTitle))
+            bool canCreate = false;
+            foreach (var quiz in _quizManager.AllQuizzes)
             {
-                return true;
+                if (!string.IsNullOrWhiteSpace(_quizTitle) && _quizTitle.ToLower() != quiz.Title.ToLower())
+                {
+                    canCreate = true;
+                }
+                else
+                {
+                    canCreate = false;
+                    break;
+                }
             }
-            else
-            {
-                return false;
-            }
+            return canCreate;
         }
         private void CreateQuiz()
         {

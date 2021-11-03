@@ -72,13 +72,12 @@ namespace Labb_3.ViewModels
         private string _answer1;
         public string Answer1
         {
-            get { return CurrentQuestion.Answers[0]; }
+            get => CurrentQuestion != null ? CurrentQuestion.Answers[0] : string.Empty;
             set
             {
                 SetProperty(ref CurrentQuestion.Answers[0], value);
                 SetProperty(ref _answer1, value);
                 AnswersCurrentQ[0] = Answer1;
-                //OnPropertyChanged(nameof(CorrectAnswerCurrentQ));
                 OnPropertyChanged(nameof(CurrentQuestion.CorrectAnswer));
             }
         }
@@ -86,13 +85,12 @@ namespace Labb_3.ViewModels
         private string _answer2;
         public string Answer2
         {
-            get { return CurrentQuestion.Answers[1]; }
+            get => CurrentQuestion != null ? CurrentQuestion.Answers[1] : string.Empty;
             set
             {
                 SetProperty(ref CurrentQuestion.Answers[1], value);
                 SetProperty(ref _answer2, value);
                 AnswersCurrentQ[1] = Answer2;
-                //OnPropertyChanged(nameof(CorrectAnswerCurrentQ));
                 OnPropertyChanged(nameof(CurrentQuestion.CorrectAnswer));
             }
         }
@@ -100,13 +98,12 @@ namespace Labb_3.ViewModels
         private string _answer3;
         public string Answer3
         {
-            get { return CurrentQuestion.Answers[2]; }
+            get => CurrentQuestion != null ? CurrentQuestion.Answers[2] : string.Empty;
             set
             {
                 SetProperty(ref CurrentQuestion.Answers[2], value);
                 SetProperty(ref _answer3, value);
                 AnswersCurrentQ[2] = Answer3;
-                //OnPropertyChanged(nameof(CorrectAnswerCurrentQ));
                 OnPropertyChanged(nameof(CurrentQuestion.CorrectAnswer));
             }
         }
@@ -117,18 +114,6 @@ namespace Labb_3.ViewModels
         { 
             get { return _answersCurrentQ; }
         }
-
-        //private int _correctAnswerCurrentQ;
-        //public int CorrectAnswerCurrentQ
-        //{
-        //    get { return _correctAnswerCurrentQ; }
-        //    set
-        //    {
-        //        SetProperty(ref _correctAnswerCurrentQ, value);
-        //    }
-        //}
-
-
 
         private string _newAnswer1;
         public string NewAnswer1
@@ -185,9 +170,9 @@ namespace Labb_3.ViewModels
 
         public RelayCommand GoToStartCommand { get; }
         public RelayCommand AddQuestionCommand { get; }
-        public RelayCommand DeleteQuestionCommand { get; }
+        public AsyncRelayCommand DeleteQuestionCommand { get; }
         public AsyncRelayCommand SaveQuizCommand { get; }
-
+        public AsyncRelayCommand SaveQuestionCommand { get; }
 
         #endregion
 
@@ -200,18 +185,44 @@ namespace Labb_3.ViewModels
             CorrectNewAnswer = 0;
             GoToStartCommand = new RelayCommand(GoToStart);
             AddQuestionCommand = new RelayCommand(AddQuestion, CanAddQuestion);
-            DeleteQuestionCommand = new RelayCommand(DeleteQuestion);
+            SaveQuestionCommand = new AsyncRelayCommand(SaveQuestionAsync, CanSaveQuestion);
+            DeleteQuestionCommand = new AsyncRelayCommand(DeleteQuestionAsync);
             SaveQuizCommand = new AsyncRelayCommand(SaveToFileAsync, CanSaveToFile);
             PropertyChanged += OnViewModelPropertyChanged;
         }
 
+        private bool CanSaveQuestion()
+        {
+            if (CurrentQuiz != null &&
+                !string.IsNullOrWhiteSpace(CurrentQuestion.Statement) &&
+                !string.IsNullOrWhiteSpace(Answer1) &&
+                !string.IsNullOrWhiteSpace(Answer2) &&
+                !string.IsNullOrWhiteSpace(Answer3))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        private async Task SaveQuestionAsync()
+        {
+            _quizManager.AllQuizzes = AvailableQuizzes;
+            await _quizManager.SaveToFileAsync();
+            MessageBox.Show("Your question was successfully updated.");
+            _navigationManager.CurrentViewModel = new EditQuizViewModel(_navigationManager, _quizManager);
+        }
 
-        private void DeleteQuestion()
+        private async Task DeleteQuestionAsync()
         {
             int questionToRemoveInt = CurrentQuiz.Questions.ToList().IndexOf(CurrentQuestion);
             CurrentQuiz.RemoveQuestion(questionToRemoveInt);
+            MessageBox.Show("Your question was removed.");
+            _quizManager.AllQuizzes = AvailableQuizzes;
+            await _quizManager.SaveToFileAsync();
+            _navigationManager.CurrentViewModel = new EditQuizViewModel(_navigationManager, _quizManager);
         }
-
 
         private bool CanAddQuestion()
         {
@@ -243,7 +254,6 @@ namespace Labb_3.ViewModels
             NewAnswers[2] = "";
         }
 
-
         private bool CanSaveToFile()
         {
             if (CurrentQuiz != null && CurrentQuiz.Questions.Count != 0)
@@ -257,6 +267,7 @@ namespace Labb_3.ViewModels
         }
         private async Task SaveToFileAsync()
         {
+            _quizManager.AllQuizzes = AvailableQuizzes;
             await _quizManager.SaveToFileAsync();
             MessageBox.Show("Your quiz was successfully updated.");
             GoToStart();
@@ -270,6 +281,7 @@ namespace Labb_3.ViewModels
         private void OnViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             SaveQuizCommand.NotifyCanExecuteChanged();
+            SaveQuestionCommand.NotifyCanExecuteChanged();
             AddQuestionCommand.NotifyCanExecuteChanged();
             DeleteQuestionCommand.NotifyCanExecuteChanged();
         }

@@ -69,14 +69,14 @@
             <TextBox Text="{Binding Answer2, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
             <TextBlock Text="Answer no 3:" />
             <TextBox Text="{Binding Answer3, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-            <TextBlock Text="Select right answer:" />
+            <TextBlock Text="Current Answers:" />
             <ComboBox
                 Margin="0, 5"
                 ItemsSource="{Binding AnswersCurrentQ, UpdateSourceTrigger=PropertyChanged}"/>
             <StackPanel Orientation="Horizontal">
                 <Button
                     Margin="10, 0"
-                    Command="{Binding SaveQuizCommand}"
+                    Command="{Binding SaveQuestionCommand}"
                     Content="SAVE QUESTION" />
                 <Button
                     Margin="10, 0"

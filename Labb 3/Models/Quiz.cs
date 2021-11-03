@@ -20,7 +20,6 @@ namespace Labb_3.Models
             set => _questions = value;
         }
 
-
         private readonly List<int> _shownQuestions = new();
 
         
@@ -39,7 +38,6 @@ namespace Labb_3.Models
             {
                 if (_shownQuestions.Contains(question))
                 {
-                    //todo Skapa snyggare lösning.
                     if (_shownQuestions.Count == _questions.Count)
                     {
                         return null;
