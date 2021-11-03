@@ -184,6 +184,7 @@ namespace Labb_3.ViewModels
             SaveQuestionCommand = new AsyncRelayCommand(SaveQuestionAsync, CanSaveQuestion);
             DeleteQuestionCommand = new AsyncRelayCommand(DeleteQuestionAsync);
             SaveQuizCommand = new AsyncRelayCommand(SaveToFileAsync, CanSaveToFile);
+
             PropertyChanged += OnViewModelPropertyChanged;
         }
 

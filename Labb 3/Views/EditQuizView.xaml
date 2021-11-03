@@ -102,7 +102,7 @@
             <ComboBox
                 Margin="0, 5"
                 ItemsSource="{Binding NewAnswers, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-                SelectedItem="{Binding CorrectNewAnswer, UpdateSourceTrigger=PropertyChanged}" />
+                SelectedIndex="{Binding CorrectNewAnswer, UpdateSourceTrigger=PropertyChanged}" />
             <Button
                 Margin="10, 5, 10,0"
                 Command="{Binding AddQuestionCommand}"
