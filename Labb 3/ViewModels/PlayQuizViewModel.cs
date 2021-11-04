@@ -1,4 +1,5 @@
-﻿using Labb_3.Managers;
+﻿using System;
+using Labb_3.Managers;
 using Labb_3.Models;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
@@ -117,25 +118,32 @@ namespace Labb_3.ViewModels
         }
         private void ControlAnswer()
         {
-            NumberOfAnsweredQuestions++;
-            if (_chosenAnswer == CurrentQuestion.CorrectAnswer)
+            if (CurrentQuestion == null)
             {
-                NumberOfCorrectAnswers++;
-                MessageBox.Show("Correct answer!");
+                MessageBox.Show("You have to press the Start Game-button!");
             }
             else
             {
-                MessageBox.Show("Wrong answer. :( ");
-            }
+                NumberOfAnsweredQuestions++;
+                if (_chosenAnswer == CurrentQuestion.CorrectAnswer)
+                {
+                    NumberOfCorrectAnswers++;
+                    MessageBox.Show("Correct answer!");
+                }
+                else
+                {
+                    MessageBox.Show("Wrong answer. :( ");
+                }
 
-            if (NumberOfAnsweredQuestions == CurrentQuiz.Questions.Count)
-            {
-                MessageBox.Show($"Thank you for playing! You got {NumberOfCorrectAnswers} of {CurrentQuiz.Questions.Count}.");
-                GoToStart();
-            }
-            else
-            {
-                CurrentQuestion = CurrentQuiz.GetRandomQuestion();
+                if (NumberOfAnsweredQuestions == CurrentQuiz.Questions.Count)
+                {
+                    MessageBox.Show($"Thank you for playing! You got {NumberOfCorrectAnswers} of {CurrentQuiz.Questions.Count}.");
+                    GoToStart();
+                }
+                else
+                {
+                    CurrentQuestion = CurrentQuiz.GetRandomQuestion();
+                }
             }
         }
 

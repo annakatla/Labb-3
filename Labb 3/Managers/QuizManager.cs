@@ -3,6 +3,7 @@ using Microsoft.Toolkit.Mvvm.ComponentModel;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -39,9 +40,23 @@ namespace Labb_3.Managers
 
         public async Task<List<Quiz>> LoadQuizAsync()
         {
-            using FileStream loadStream = File.OpenRead(Path.Combine(_path, _fileName));
-            var quizzes = await JsonSerializer.DeserializeAsync<List<Quiz>>(loadStream);
-            return quizzes;
+            try
+            {
+                using FileStream loadStream = File.OpenRead(Path.Combine(_path, _fileName));
+                var quizzes = await JsonSerializer.DeserializeAsync<List<Quiz>>(loadStream);
+                return quizzes;
+            }
+            catch
+            {
+                var defaultQuiz = new Quiz("Jim Carrey Quiz");
+                defaultQuiz.AddQuestion("Vilken är Jim Carreys debutfilm?", 2, "Ace Ventura", "Peggy Sue gifte sig",
+                    "Copper Mountain");
+                defaultQuiz.AddQuestion("I Vilken film ser vi Jim Carrey som komikern Andy Kaufman?", 0, "Man on the moon", "Kidding", "Liar Liar");
+                defaultQuiz.AddQuestion("Vilket år är Jim Carrey född?", 1, "1958", "1962", "1965");
+                var quizzes = new List<Quiz>();
+                quizzes.Add(defaultQuiz);
+                return quizzes;
+            }
         }
     }
 }

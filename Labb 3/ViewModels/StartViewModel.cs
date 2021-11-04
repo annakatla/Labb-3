@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -27,25 +28,28 @@ namespace Labb_3.ViewModels
             _navigationManager = navigationManager;
             _quizManager = quizManager;
 
-            EditQuizCommand = new AsyncRelayCommand(GoToEdit);
-            PlayQuizCommand = new AsyncRelayCommand(GoToPlay);
-            CreateQuizCommand = new AsyncRelayCommand(GoToCreate);
+            EditQuizCommand = new AsyncRelayCommand(GoToEditAsync);
+            PlayQuizCommand = new AsyncRelayCommand(GoToPlayAsync);
+            CreateQuizCommand = new AsyncRelayCommand(GoToCreateAsync);
 
         }
 
-        private async Task GoToPlay()
+        private async Task GoToPlayAsync()
         {
-            await Task.Run(() => { _quizManager.AllQuizzes = new ObservableCollection<Quiz>(_quizManager.LoadQuizAsync().Result); });
+            await Task.Run(() =>
+            {
+                _quizManager.AllQuizzes = new ObservableCollection<Quiz>(_quizManager.LoadQuizAsync().Result);
+            });
             _navigationManager.CurrentViewModel = new PlayQuizViewModel(_navigationManager, _quizManager);
         }
 
-        private async Task GoToCreate()
+        private async Task GoToCreateAsync()
         {
             await Task.Run(() => { _quizManager.AllQuizzes = new ObservableCollection<Quiz>(_quizManager.LoadQuizAsync().Result); });
             _navigationManager.CurrentViewModel = new CreateQuizViewModel(_navigationManager, _quizManager);
         }
 
-        private async Task GoToEdit()
+        private async Task GoToEditAsync()
         {
             await Task.Run(() => { _quizManager.AllQuizzes = new ObservableCollection<Quiz>(_quizManager.LoadQuizAsync().Result); });
             _navigationManager.CurrentViewModel = new EditQuizViewModel(_navigationManager, _quizManager);
